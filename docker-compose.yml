@@ -1,0 +1,35 @@
+services:
+  webhook-saver:
+    image: webhook-saver:latest
+    build:
+      context: .
+      network: host
+    restart: unless-stopped
+    ports:
+      - "4433:4433"
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_DB_NAME=moreloja
+      - MONGO_COLLECTION_NAME=jellyfin-music
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    restart: unless-stopped
+    # ports:
+    #   - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  # Uncomment if you want to see what is in your db
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_SERVER: mongodb
+
+volumes:
+  mongodb_data:
